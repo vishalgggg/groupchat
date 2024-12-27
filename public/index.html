@@ -8,12 +8,17 @@
 </head>
  
     <div class="input-box">
-        <input type="text" placeholder="Enter your name" id="name"><br><br>
-        <input type="text" placeholder="Enter your email" id="email"><br><br>
-        <input type="text" placeholder="Enter your phone number" id="phone"><br><br>
-        <input type="password" placeholder="Enter your password" id="password"><br><br>
-        <button class="SignUpBtn" type="submit" id="SignUp">SignUp</button><br><br>
-        <p class="p1"><strong>Already have an account  ?</strong>  <button type="submit" id="login">Login</button></p>
+        <form id="signUpForm">
+            <input type="text" placeholder="Enter your name" id="name" required><br><br>
+            <input type="text" placeholder="Enter your email" id="email" required><br><br>
+            <input type="tel" placeholder="Enter your phone number" id="phone" required><br><br>
+            <input type="password" placeholder="Enter your password" id="password" required><br><br>
+            <button class="SignUpBtn" type="submit" id="signUp">SignUp</button><br><br>
+        </form>
+        <form id="loginPage">
+            <p class="p1"><strong>Already have an account  ?</strong>  <button type="submit">Login</button></p>
+        </form>
+
     </div>
 
 </body>
