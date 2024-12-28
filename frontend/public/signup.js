@@ -42,19 +42,27 @@ document.addEventListener("DOMContentLoaded", () =>  {
                 headers : {"Content-Type":"application/json"},
                 body:JSON.stringify({email,password}),
             })
-            const result = await response.text();
-            if(result === "success"){
-                window.location.href = "/home";
-            }
-            else if(result === "email not found"){
-                alert("Incorrect email");
-            }
-            else if(result === "password incorrect"){
-                alert("Incorrect password");
+            const result = await response.json();
+            console.log(result);
+            if(response.ok){
+                alert("Login successful");
+                localStorage.setItem("token",result.token);
+                window.location.href = "./home.html";
+
             }
             else{
-                alert(result);
-    }
+                if(result.message === "success"){
+                    alert("Login successful");
+                }
+                else if(result === "email not found"){
+                    alert("Incorrect email");
+                }
+                else if(result === "password incorrect"){
+                    alert("Incorrect password");
+                }else{
+                    alert(result);
+                }
+            }
         })
     }
     const signUpPage = document.getElementById("signUpPage");
