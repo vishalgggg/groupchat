@@ -32,23 +32,23 @@ document.addEventListener("DOMContentLoaded", () =>  {
     }
     const loginForm = document.getElementById("loginForm");
     if(loginForm){
-        loginForm.addEventListener("submit",async (e) => {
+        loginForm.addEventListener("submit", async (e) => {
             e.preventDefault();
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
-
-            const response = await fetch("/api/login",{
-                method : "POST",
-                headers : {"Content-Type":"application/json"},
-                body:JSON.stringify({email,password}),
-            })
-            const result = await response.json();
-            console.log(result);
-            if(response.ok){
+        
+            const response = await fetch("/api/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+            });
+        
+            if (response.ok) {
+                const result = await response.json();
+                console.log(result) // Ensure you parse the JSON response
                 alert("Login successful");
-                localStorage.setItem("token",result.token);
+                localStorage.setItem("token", result.token); // Store the token
                 window.location.href = "./home.html";
-
             }
             else{
                 if(result.message === "success"){
@@ -59,8 +59,9 @@ document.addEventListener("DOMContentLoaded", () =>  {
                 }
                 else if(result === "password incorrect"){
                     alert("Incorrect password");
-                }else{
-                    alert(result);
+                }else {
+                    const errorText = await response.text(); // Get the error message
+                    alert(errorText); // Show the error message
                 }
             }
         })

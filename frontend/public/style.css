@@ -6,7 +6,6 @@ body{
 .input-box{
     margin-top: 75px;
     text-align: center;
-    
     padding: 30px;
     margin-right: 20%;
     margin-left: 20%;
@@ -54,22 +53,27 @@ button:hover{
     padding: 0;
     height: 100%;
     font-family: Arial, sans-serif;
-    background-color: rgb(185, 220, 220);
+    background-color: white(25, 134, 29);
 }
-.chat-box{
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+.homeH2{
+    margin: 0;
+    background-color: #e7d44a ;
+    text-align: center;
+    padding: 2px;
 }
+
 .messages {
-    margin: 20px;
-    padding: 30px;
+    margin-bottom: 20px;
+    padding-left: 20px; 
+    padding-right: 20px;
     flex: 1;
-    overflow-y: auto;
-    background-color: #f0f0f0;
+    overflow-y: auto; 
     border-radius: 20px;
+    padding-bottom: 70px; 
+    box-sizing: border-box;
 }
 .message-box {
+    
     position: fixed; 
     bottom: 0; 
     left: 0; 
@@ -80,6 +84,7 @@ button:hover{
     background-color: #789066; 
     border-top: 1px solid #ccc; 
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); 
+    z-index: 1000; /* Ensure it stays on top */
 }
 
 .message-box input {
@@ -99,4 +104,21 @@ button:hover{
 
 .message-box button:hover {
     background-color: #0056b3;
+}
+.current-user {
+    align-items:end;
+    background-color: #18ce3a; /* Light green background for current user */
+    padding: 10px;
+    border-radius: 5px;
+    display: inline;
+
+}
+
+.other-user {
+    background-color: #0f0e0e; /* Light red background for other users */
+    padding: 10px;
+    border-radius: 5px;
+    color: wheat;
+    display: inline;
+    
 }

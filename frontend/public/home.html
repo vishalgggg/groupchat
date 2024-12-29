@@ -7,20 +7,20 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="home">
-    <div class="chat-box">
-        <div class="messages">
-            <p>hiii</p>
-            <p>hello</p>
-            <p>how are you</p>
-            <p>fine</p>
-            <p>what about you</p>
-            
-            
-        </div>
-        <div class="message-box">
-                <input type="text" name="message" id="message" placeholder="Enter message...">
-                <button type="submit" id="sendMessage">Send</button>
+    <h2 class="homeH2">Group messages</h2>
+    <div class="ide">
+        <div class="chat-box">
+            <div class="messages" id="allMessages">
+
+            </div>
+            <form id="sendMessage"> <!-- Added form tag -->
+                <div class="message-box">
+                    <input type="text" name="message" id="message" placeholder="Enter message...">
+                    <button type="submit">Send</button>
+                </div>
+            </form>
         </div> 
-    </div>   
+    </div>  
 </body>
+<script src="home.js"></script>
 </html>

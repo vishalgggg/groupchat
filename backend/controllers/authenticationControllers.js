@@ -20,25 +20,23 @@ const authenticateUser = {
 
         }
     },
-    login:async(req,res) => {
-        const {email,password} = req.body;
-        try{
+    login: async (req, res) => {
+        const { email, password } = req.body;
+        try {
             const user = await User.findByEmail(email);
-            if(!user){
+            if (!user) {
                 return res.status(400).json("email not found");
             }
-            const isValidPassword = await bcrypt.compare(password,user.password);
-            if(!isValidPassword){
+            const isValidPassword = await bcrypt.compare(password, user.password);
+            if (!isValidPassword) {
                 return res.status(400).json("password incorrect");
             }
-            const token = jwt.sign({userId:user.id},"secret");
-            res.status(200).json({token, message:"success"});
-
-        }catch(err){
+            const token = jwt.sign({ userId: user.id }, "secret"); // Ensure user.id is correct
+            res.status(200).json({ token, message: "success" }); // Return token in JSON
+        } catch (err) {
             console.log(err);
             res.status(500).json("Error logging in");
         }
-
     }
 };
 module.exports = authenticateUser;
