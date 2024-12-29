@@ -63,6 +63,8 @@ button:hover{
 }
 
 .messages {
+    display: flex;
+    flex-direction: column; 
     margin-bottom: 20px;
     padding-left: 20px; 
     padding-right: 20px;
@@ -106,19 +108,24 @@ button:hover{
     background-color: #0056b3;
 }
 .current-user {
-    align-items:end;
-    background-color: #18ce3a; /* Light green background for current user */
+    align-self: flex-end; /* Aligns the message to the right */
+    background-color: #18ce3a; 
     padding: 10px;
     border-radius: 5px;
-    display: inline;
+    display: inline-block; 
+    text-align: right; 
+    max-width: 70%; 
 
 }
 
 .other-user {
-    background-color: #0f0e0e; /* Light red background for other users */
+    align-self: flex-start; 
+    background-color: #080808; 
     padding: 10px;
     border-radius: 5px;
-    color: wheat;
-    display: inline;
+    display: inline-block; 
+    text-align: left;
+    max-width: 70%; 
+    color: #ccc;
     
 }

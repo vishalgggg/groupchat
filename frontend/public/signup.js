@@ -13,7 +13,9 @@ document.addEventListener("DOMContentLoaded", () =>  {
                 headers:{"Content-Type":"application/json"},
                 body:JSON.stringify({name,email,phone,password}),
             });
-            const result = await response.text();
+            const result = await response.json();
+            console.log(result)
+
             if(result === "success"){
                 window.location.href = "/login";
             }

@@ -25,7 +25,7 @@ const messageControl = {
             }));
             
             // Log the formatted messages to see the structure
-            console.log("Formatted messages:", formattedMessages);
+            //console.log("Formatted messages:", formattedMessages);
             res.json(formattedMessages); // Send the formatted messages as a response
         } catch (error) {
             console.error("Error retrieving messages:", error); // Log the error for debugging

@@ -76,15 +76,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             messageDiv.classList.add("current-user");
             messageDiv.style.textAlign = "right";
             container.appendChild(document.createElement("br"))
-            container.appendChild(document.createElement("br"))
-            container.appendChild(document.createElement("br"))
 
 
         } else {
             messageDiv.classList.add("other-user");
             messageDiv.style.textAlign = "left";
-            container.appendChild(document.createElement("br"))
-            container.appendChild(document.createElement("br"))
             container.appendChild(document.createElement("br"))
 
         }
