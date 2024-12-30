@@ -13,7 +13,9 @@ document.addEventListener("DOMContentLoaded", () =>  {
                 headers:{"Content-Type":"application/json"},
                 body:JSON.stringify({name,email,phone,password}),
             });
-            const result = await response.text();
+            const result = await response.json();
+            console.log(result)
+
             if(result === "success"){
                 window.location.href = "/login";
             }
@@ -32,29 +34,38 @@ document.addEventListener("DOMContentLoaded", () =>  {
     }
     const loginForm = document.getElementById("loginForm");
     if(loginForm){
-        loginForm.addEventListener("submit",async (e) => {
+        loginForm.addEventListener("submit", async (e) => {
             e.preventDefault();
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
-
-            const response = await fetch("/api/login",{
-                method : "POST",
-                headers : {"Content-Type":"application/json"},
-                body:JSON.stringify({email,password}),
-            })
-            const result = await response.text();
-            if(result === "success"){
-                window.location.href = "/home";
-            }
-            else if(result === "email not found"){
-                alert("Incorrect email");
-            }
-            else if(result === "password incorrect"){
-                alert("Incorrect password");
+        
+            const response = await fetch("/api/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+            });
+        
+            if (response.ok) {
+                const result = await response.json();
+                console.log(result) // Ensure you parse the JSON response
+                alert("Login successful");
+                localStorage.setItem("token", result.token); // Store the token
+                window.location.href = "./home.html";
             }
             else{
-                alert(result);
-    }
+                if(result.message === "success"){
+                    alert("Login successful");
+                }
+                else if(result === "email not found"){
+                    alert("Incorrect email");
+                }
+                else if(result === "password incorrect"){
+                    alert("Incorrect password");
+                }else {
+                    const errorText = await response.text(); // Get the error message
+                    alert(errorText); // Show the error message
+                }
+            }
         })
     }
     const signUpPage = document.getElementById("signUpPage");

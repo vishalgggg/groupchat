@@ -1,5 +1,6 @@
 const express = require('express');
 const userRoutes = require('./routes/userRoutes');
+const messageRoutes = require("./routes/messageRoutes");
 const path = require('path');
 const cors = require('cors');
 
@@ -13,6 +14,8 @@ app.use(express.json());
 
 
 app.use("/api",userRoutes);
+
+app.use("/api",messageRoutes);
 
 app.use(express.static(path.join(__dirname,"../frontend/public")));
 
