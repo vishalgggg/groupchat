@@ -8,8 +8,8 @@ const authenticate = async (req, res, next) => {
     if (!token) return res.status(401).send('Access Denied');
 
     try {
-        const verified = jwt.verify(token, 'secret');
-        req.user = verified; // Ensure this is set correctly
+        const verified = jwt.verify(token, 'secret'); // Ensure 'your_secret_key' matches the one used to sign the token
+        req.user = verified; // Attach user info to the request
         next();
     } catch (err) {
         res.status(400).send('Invalid Token');
