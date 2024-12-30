@@ -2,7 +2,8 @@ const {Sequelize} = require('sequelize');
 
 const db = new Sequelize("groupChat","root","12345678",{
     host:"localhost",
-    dialect:"mysql"
+    dialect:"mysql",
+    logging: console.log,
 });
 (async () => {
     try {

@@ -26,11 +26,8 @@ const User = db.define("User",{
     },
     createdAt:{
         type:DataTypes.DATE,
-        allowNull:false
-    },
-    createdAt:{
-        type:DataTypes.DATE,
-        allowNull:false
+        allowNull:false,
+        defaultValue: Sequelize.NOW 
     },
 },{
     tableName:"loginData",
@@ -42,7 +39,6 @@ User.findByEmail = async (email) => {
 (async () => {
     try {
         await User.sync({ force: false }); // Use `true` to drop and recreate the table
-        console.log("The table for the User model was created (if it didn't already exist).");
     } catch (error) {
         console.error("Error synchronizing the User model:", error);
     }

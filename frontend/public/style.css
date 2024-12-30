@@ -6,7 +6,6 @@ body{
 .input-box{
     margin-top: 75px;
     text-align: center;
-    
     padding: 30px;
     margin-right: 20%;
     margin-left: 20%;
@@ -32,14 +31,14 @@ button{
     display: inline-block;
     border: 1px solid #ccc;
     box-sizing: border-box;
-    background-color: rgb(90, 46, 1);
+    background-color: #007bff;
     border-radius: 10px;
     color: white;
     cursor: pointer;
 }
 
 button:hover{
-    background-color: rgb(137, 136, 209);
+    background-color:#0056b3;;
     color: white;
 }
 .p1{
@@ -48,4 +47,87 @@ button:hover{
     font-size: 15px;
     font-weight: bold;
     color: rgb(17, 1, 1);
+}
+.home{
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background-color: white(25, 134, 29);
+}
+.homeH2{
+    margin: 0;
+    background-color: #e7d44a ;
+    text-align: center;
+    padding: 2px;
+}
+
+.messages {
+    display: flex;
+    flex-direction: column;
+    margin-left:20px ;
+    margin-right: 20px;
+    margin-bottom: 0px;
+    padding-left: 20px; 
+    padding-right: 20px;
+    flex: 1;
+    overflow-y: auto; 
+    border-radius: 20px;
+    padding-bottom: 70px; 
+    box-sizing: border-box;
+}
+.message-box {
+    
+    position: fixed; 
+    bottom: 0; 
+    left: 0; 
+    right: 0; 
+    display: flex; 
+    gap: 10px; 
+    padding: 10px;
+    background-color: #789066; 
+    border-top: 1px solid #ccc; 
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); 
+    z-index: 1000; /* Ensure it stays on top */
+}
+
+.message-box input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #1a1313;
+    border-radius: 5px;
+}
+.message-box button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.message-box button:hover {
+    background-color: #0056b3;
+}
+.current-user {
+    align-self: flex-end; /* Aligns the message to the right */
+    background-color: #18ce3a; 
+    padding: 10px;
+    border-radius: 5px;
+    display: inline-block; 
+    text-align: right; 
+    max-width: 70%; 
+
+}
+
+.other-user {
+    align-self: flex-start; 
+    background-color: #080808; 
+    padding: 10px;
+    border-radius: 5px;
+    display: inline-block; 
+    text-align: left;
+    max-width: 70%; 
+    color: #fdfafc;
+    
 }
