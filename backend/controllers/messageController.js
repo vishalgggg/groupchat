@@ -1,53 +1,54 @@
-const  User  = require('../models/loginData'); 
+const { Op } = require("sequelize"); // Ensure Op is imported
+const User = require('../models/loginData'); 
 const Message = require("../models/messageData");
 
 const messageControl = {
     getMessages: async (req, res) => {
+        const lastId = req.query.lastId ? parseInt(req.query.lastId) : -1; // Parse lastId
+        console.log("Fetching messages with lastId:", lastId);
+        const messagesCount = await Message.count();
+        console.log("Total messages in the database:", messagesCount);
         try {
+            // If lastId is -1, fetch all messages
             const messages = await Message.findAll({
-                include: [{ model: User, attributes: ['name'] }] // Ensure User is included
+                where: {
+                    id: {
+                        [Op.gt]: lastId // Fetch messages with ID greater than lastId
+                    }
+                },
+                include: [{ model: User, attributes: ['name'] }]
             });
-    
-            // Log the messages to see what is retrieved
-            //console.log("Retrieved messages:", messages);
-    
+            
+            // Format messages as before
             const formattedMessages = messages.map(msg => ({
                 id: msg.id,
                 message: msg.message,
-                name: msg.User ? msg.User.name : 'Unknown', // Handle case where User might be null
-                isCurrent:msg.userId === req.user.userId, // Corrected line
+                name: msg.User ? msg.User.name : 'Unknown',
+                isCurrent:msg.userId === req.user.userId,
                 userId: msg.userId,
                 createdAt: msg.createdAt,
                 updatedAt: msg.updatedAt,
-                msgUserId:msg.userId,
-                reqUserId:req.user.userId,
-
             }));
             
-            // Log the formatted messages to see the structure
-            //console.log("Formatted messages:", formattedMessages);
-            res.json(formattedMessages); // Send the formatted messages as a response
+            return res.json(formattedMessages); // Return formatted messages
         } catch (error) {
-            console.error("Error retrieving messages:", error); // Log the error for debugging
-            res.status(500).send('Error retrieving messages');
+            console.error("Error retrieving messages:", error);
+            return res.status(500).send('Error retrieving messages');
         }
     },
     postMessage: async (req, res) => {
-        console.log("postmessage function");
-        console.log("User   ID:", req.user);
         const { message } = req.body;
         try {
             const newMessage = await Message.create({
                 userId: req.user.userId,
                 message
             });
-            res.json(newMessage);
+            return res.json(newMessage);
         } catch (error) {
-            console.error("Error saving message:", error.message); // Log the error message
-            res.status(500).send('Error saving message');
+            console.error("Error saving message:", error.message);
+            return res.status(500).send('Error saving message');
         }
     }
-
 }
 
 module.exports = messageControl;

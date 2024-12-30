@@ -64,8 +64,10 @@ button:hover{
 
 .messages {
     display: flex;
-    flex-direction: column; 
-    margin-bottom: 20px;
+    flex-direction: column;
+    margin-left:20px ;
+    margin-right: 20px;
+    margin-bottom: 0px;
     padding-left: 20px; 
     padding-right: 20px;
     flex: 1;
@@ -126,6 +128,6 @@ button:hover{
     display: inline-block; 
     text-align: left;
     max-width: 70%; 
-    color: #ccc;
+    color: #fdfafc;
     
 }

@@ -4,7 +4,7 @@ const authenticate = require("../middlewares/authenticate")
 
 const router = express.Router();
 
-router.get("/messages",authenticate,messageControl.getMessages);
-router.post("/messages",authenticate,messageControl.postMessage);
 
+router.post("/messages",authenticate,messageControl.postMessage);
+router.get("/messages",authenticate,messageControl.getMessages);
 module.exports = router;
