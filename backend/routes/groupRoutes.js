@@ -20,5 +20,9 @@ router.get("/invites/pending", authenticate, groupControl.getPendingInvites);
 router.post("/groups/:group_id/invite/:invite_id/accept", authenticate, groupControl.acceptInvite);
 router.post("/groups/:group_id/invite/:invite_id/reject", authenticate, groupControl.rejectInvite);
 
+router.patch("/groups/:group_id/members/:user_id/make-admin", authenticate, groupControl.makeAdmin);
+router.patch("/groups/:group_id/members/:user_id/remove-admin", authenticate, groupControl.removeAdmin);
+
+
 
 module.exports = router;

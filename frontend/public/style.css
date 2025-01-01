@@ -177,10 +177,14 @@ button:hover{
     padding: 5px;
     color: white;
 }
+#addAdminButton {
+    margin-top: 0%;
+    margin-left: auto; /* Push the button to the right */
+}
 
 #addGroupMemberButton {
     margin-top: 0%;
-    margin-left: auto; /* Push the button to the right */
+    margin-left: 70%; /* Push the button to the right */
 }
 #deleteGroupMemberButton{
     margin-top: 0%;

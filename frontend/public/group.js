@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("Token retrieved:", token);
     fetchPendingInvites() 
     let currentGroupId = null;
+    let creatorId = null;
     let isAdmin = false; 
 
     if (!token) {
@@ -75,6 +76,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         await loadGroupMessages(groupId, token);
         await updateGroupName(groupId, token);
         await checkIfAdmin(groupId, token);
+        const groupResponse = await fetch(`/api/groups/${groupId}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!groupResponse.ok) {
+            const errorText = await groupResponse.text();
+            console.error("Failed to fetch group:", errorText);
+            return;
+        }
+        const group = await groupResponse.json();
+        creatorId = group.creator_id; 
     }
 
 
@@ -184,6 +195,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (response.ok) {
                 
                 const { isAdmin } = await response.json();
+                document.getElementById("addAdminButton").style.display = isAdmin ? 'block' : 'none';
                 document.getElementById("addGroupMemberButton").style.display = isAdmin ? 'block' : 'none';
                 document.getElementById("deleteGroupMemberButton").style.display = isAdmin ? 'block' : 'none';
                 document.getElementById("leaveGroupButton").style.display = isAdmin ? 'none' : 'block';
@@ -342,8 +354,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
-    document.getElementById("deleteGroupMemberButton").addEventListener("click", async () => {
+    async function getGroupMembers() {
         try {
+            // Fetch all group members
             const membersResponse = await fetch(`/api/groups/${currentGroupId}/members`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -354,6 +367,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
             const members = await membersResponse.json();
     
+            // Fetch all users
             const usersResponse = await fetch(`/api/groups/${currentGroupId}/users`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -363,8 +377,20 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
             const users = await usersResponse.json();
+    
+            // Filter users to only include those who are also group members
             const usersInGroup = users.filter(user => members.some(member => member.user_id === user.id));
- 
+    
+            return usersInGroup;
+        } catch (error) {
+            console.error("Error fetching group members or users:", error);
+        }
+    }
+
+
+    document.getElementById("deleteGroupMemberButton").addEventListener("click", async () => {
+        try {
+            const usersInGroup = await getGroupMembers();
             renderUserList(usersInGroup, "Remove");
             document.getElementById("modalTitle").textContent = "Delete Group Members";
 
@@ -384,6 +410,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             const userItem = document.createElement("li");
             userItem.textContent = user.name; 
             const button = document.createElement("button");
+            if (user.id === creatorId) {
+                button.textContent = "Creator";
+                userItem.appendChild(button); 
+                userList.appendChild(userItem);
+                return;
+            }
             button.textContent = buttonType;
             button.onclick = async () => {
                 if (buttonType === "Add") {
@@ -425,6 +457,100 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         });
     }
+    // Add event listener to the addAdminButton
+document.getElementById("addAdminButton").addEventListener("click", async () => {
+    try {
+        const usersInGroup = await getGroupMembers();
+        renderAdminList(usersInGroup);
+    } catch (error) {
+        console.error("Error fetching group members or users:", error);
+    }
+});
+
+// Function to render the user list with make admin or remove admin buttons
+function renderAdminList(usersInGroup) {
+    const userList = document.getElementById("userList");
+    userList.innerHTML = ""; // Clear existing users
+
+    usersInGroup.forEach(user => {
+        const userItem = document.createElement("li");
+        userItem.textContent = user.name; // Display user name
+
+        // Skip the creator
+        if (user.id === creatorId) {
+            const creatorButton = document.createElement("button");
+            creatorButton.textContent = "Creator";
+            creatorButton.disabled = true; // Disable the button for the creator
+            userItem.appendChild(creatorButton);
+            userList.appendChild(userItem);
+            return;
+        }
+
+        // Check if the user is already an admin
+        const isAdmin = user.isAdmin; // Assuming `isAdmin` is part of the user object
+
+        // Create make admin or remove admin button
+        const button = document.createElement("button");
+        button.classList.add("adminButton");
+        if (isAdmin) {
+            button.textContent = "Remove Admin";
+            button.onclick = async () => {
+                await removeAdmin(user.id);
+                document.getElementById("addAdminButton").click();
+            };
+        } else {
+            button.textContent = "Make Admin";
+            button.onclick = async () => {
+                await makeAdmin(user.id);
+                document.getElementById("addAdminButton").click();
+            };
+        }
+
+        userItem.appendChild(button); // Add button to user item
+        userList.appendChild(userItem); // Add user item to user list
+    });
+
+    // Show the modal
+    document.getElementById("modalTitle").textContent = "Manage Admins";
+    const modal = document.getElementById("addMemberModal");
+    modal.style.display = "block"; // Show the modal
+}
+
+// Function to make a user an admin
+async function makeAdmin(userId) {
+    try {
+        const response = await fetch(`/api/groups/${currentGroupId}/members/${userId}/make-admin`, {
+            method: "PATCH",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+        const result = await response.json();
+        alert(result); // Show the result
+    } catch (error) {
+        console.error("Error making user an admin:", error);
+        alert("Error making user an admin. Please try again.");
+    }
+}
+
+// Function to remove a user's admin status
+async function removeAdmin(userId) {
+    try {
+        const response = await fetch(`/api/groups/${currentGroupId}/members/${userId}/remove-admin`, {
+            method: "PATCH",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+        const result = await response.json();
+        alert(result); // Show the result
+    } catch (error) {
+        console.error("Error removing user's admin status:", error);
+        alert("Error removing user's admin status. Please try again.");
+    }
+}
     
 
 });

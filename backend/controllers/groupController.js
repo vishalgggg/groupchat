@@ -279,6 +279,53 @@ const groupControl = {
             res.status(500).json("Error fetching pending invites");
         }
     },
+    makeAdmin: async (req, res) => {
+        const { group_id } = req.params;
+        const { user_id } = req.params;
+        const admin_id = req.user.userId; // Get the current user's ID
+
+        try {
+            const group = await Group.findOne({ where: { id: group_id, creator_id: admin_id } });
+            if (!group) {
+                return res.status(403).json("You are not the admin of this group");
+            }
+
+            const member = await GroupMember.findOne({ where: { group_id, user_id } });
+            if (!member) {
+                return res.status(404).json("User  is not a member of this group");
+            }
+
+            await GroupMember.update({ isAdmin: true }, { where: { group_id, user_id } });
+            res.status(200).json("User  is now an admin");
+        } catch (error) {
+            console.error("Error making user an admin:", error);
+            res.status(500).json("Error making user an admin");
+        }
+    },
+
+    removeAdmin: async (req, res) => {
+        const { group_id } = req.params;
+        const { user_id } = req.params;
+        const admin_id = req.user.userId; // Get the current user's ID
+
+        try {
+            const group = await Group.findOne({ where: { id: group_id, creator_id: admin_id } });
+            if (!group) {
+                return res.status(403).json("You are not the admin of this group");
+            }
+
+            const member = await GroupMember.findOne({ where: { group_id, user_id } });
+            if (!member || !member.isAdmin) {
+                return res.status(404).json("User  is not an admin of this group");
+            }
+
+            await GroupMember.update({ isAdmin: false }, { where: { group_id, user_id } });
+            res.status(200).json("User  is no longer an admin");
+        } catch (error) {
+            console.error("Error removing user's admin status:", error);
+            res.status(500).json("Error removing user's admin status");
+        }
+    },
 };
 
 module.exports = groupControl;
