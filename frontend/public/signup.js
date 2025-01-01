@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () =>  {
                 console.log(result) // Ensure you parse the JSON response
                 alert("Login successful");
                 localStorage.setItem("token", result.token); // Store the token
-                window.location.href = "./home.html";
+                window.location.href = "./group.html";
             }
             else{
                 if(result.message === "success"){

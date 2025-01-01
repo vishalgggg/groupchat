@@ -1,5 +1,5 @@
 
-body{
+.body{
     background-color: rgba(219, 215, 215, 0.959);
     background-image: url('https://img.freepik.com/free-vector/vector-social-contact-seamless-pattern-white-blue_1284-41919.jpg?t=st=1735297770~exp=1735301370~hmac=06d74c1e9990e90e35d95dc19e65c2eecddcef28224f483bef05a62c66496c5d&w=740');
 }
@@ -130,4 +130,141 @@ button:hover{
     max-width: 70%; 
     color: #fdfafc;
     
+}
+.groupbody{
+    margin: 0;
+    padding: 0;
+}
+.container {
+    display: flex;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.left-sidebar {
+    width: 350px;
+    background-color: #91f2c5;
+    padding: 20px;
+    border-right: 1px solid #ccc;
+    
+}
+
+.right-sidebar {
+    flex: 1;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    background-color: darkgrey;
+}
+
+.groupCreationSection {
+    margin-bottom: 20px;
+}
+
+#groupList {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#groupName {
+    margin-top: 0%;
+    display: flex;
+    flex-direction: row; /* Change to row to align items horizontally */
+    align-items: center; /* Vertically center the items */
+    background-color: rgb(104, 103, 103);
+    border-radius: 10px;
+    padding: 5px;
+    color: white;
+}
+#addAdminButton {
+    margin-top: 0%;
+    margin-left: auto; /* Push the button to the right */
+}
+
+#addGroupMemberButton {
+    margin-top: 0%;
+    margin-left: 70%; /* Push the button to the right */
+}
+#deleteGroupMemberButton{
+    margin-top: 0%;
+    margin-left: auto; /* Push the button to the right */
+}
+#leaveGroupButton{
+    margin-top: 0%;
+    margin-left: auto; /* Push the button to the right */
+}
+#groupH2{
+    text-align: center;
+    background-color: rgb(207, 185, 181);
+    border-radius: 10%;
+    padding: 5px;
+}
+#groupNameInput{
+    width: 70%;
+}
+#createGroup{
+    padding-left: 2px;
+    padding-right: 2px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.group-item {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 5px 0;
+    cursor: pointer;
+}
+
+.group-item:hover {
+    background-color: #007bff;
+}
+
+#groupInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#groupName {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+#groupMessages {
+    border: 1px solid #ccc;
+    padding: 10px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    background-color: aliceblue;
+}
+
+#groupMessageForm {
+    display: flex;
+}
+
+#messageInput {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+.madel-button{
+    background-color: #007bff;
+    color: white;
+    border: 1px solid #100f0f;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 2px 2px; 
+    margin-top: 10px;
 }
