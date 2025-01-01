@@ -5,9 +5,7 @@ const Message = require("../models/messageData");
 const messageControl = {
     getMessages: async (req, res) => {
         const lastId = req.query.lastId ? parseInt(req.query.lastId) : -1; // Parse lastId
-        console.log("Fetching messages with lastId:", lastId);
-        const messagesCount = await Message.count();
-        console.log("Total messages in the database:", messagesCount);
+
         try {
             // If lastId is -1, fetch all messages
             const messages = await Message.findAll({

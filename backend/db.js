@@ -9,6 +9,7 @@ const db = new Sequelize("groupChat","root","12345678",{
     try {
         await db.authenticate();
         console.log("Database connected");
+        
     } catch (error) {
         console.error("Error connecting to the database:", error);
     }
