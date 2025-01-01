@@ -366,7 +366,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
             const members = await membersResponse.json();
-    
+            //console.log("members ====", members);
             // Fetch all users
             const usersResponse = await fetch(`/api/groups/${currentGroupId}/users`, {
                 headers: { Authorization: `Bearer ${token}` }
@@ -458,24 +458,48 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
     // Add event listener to the addAdminButton
-document.getElementById("addAdminButton").addEventListener("click", async () => {
-    try {
-        const usersInGroup = await getGroupMembers();
-        renderAdminList(usersInGroup);
-    } catch (error) {
-        console.error("Error fetching group members or users:", error);
-    }
-});
+    document.getElementById("addAdminButton").addEventListener("click", async () => {
+        try {
+            const membersResponse = await fetch(`/api/groups/${currentGroupId}/members`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (!membersResponse.ok) {
+                const errorText = await membersResponse.text();
+                console.error("Failed to fetch group members:", errorText);
+                return;
+            }
+            const members = await membersResponse.json();
+    
+            const usersResponse = await fetch(`/api/groups/${currentGroupId}/users`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (!usersResponse.ok) {
+                const errorText = await usersResponse.text();
+                console.error("Failed to fetch users:", errorText);
+                return;
+            }
+            const users = await usersResponse.json();
+    
+            // Filter users to only include those who are also group members
+            const usersInGroup = users.filter(user => members.some(member => member.user_id === user.id));
+    
+            // Render the admin list
+            renderAdminList(usersInGroup, members);
+        } catch (error) {
+            console.error("Error fetching group members or users:", error);
+        }
+    });
 
 // Function to render the user list with make admin or remove admin buttons
-function renderAdminList(usersInGroup) {
+function renderAdminList(usersInGroup,members) {
     const userList = document.getElementById("userList");
     userList.innerHTML = ""; // Clear existing users
-
+    
+    
     usersInGroup.forEach(user => {
         const userItem = document.createElement("li");
         userItem.textContent = user.name; // Display user name
-
+        console.log("user id ====", user);
         // Skip the creator
         if (user.id === creatorId) {
             const creatorButton = document.createElement("button");
@@ -485,9 +509,10 @@ function renderAdminList(usersInGroup) {
             userList.appendChild(userItem);
             return;
         }
+        const member = members.find(member => member.user_id === user.id);
 
         // Check if the user is already an admin
-        const isAdmin = user.isAdmin; // Assuming `isAdmin` is part of the user object
+        const isAdmin = member ? member.isAdmin : false;
 
         // Create make admin or remove admin button
         const button = document.createElement("button");

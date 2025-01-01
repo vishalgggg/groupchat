@@ -163,9 +163,11 @@ const groupControl = {
         const admin_id = req.user.userId; 
 
         try {
-            const group = await Group.findOne({ where: { id: group_id, creator_id: admin_id } });
-            if (!group) {
-                return res.status(403).json("You are not the admin of this group");
+            const groupMember = await GroupMember.findOne({
+                where: { group_id: group_id, user_id: admin_id, isAdmin: true }
+            });
+            if (!groupMember) {
+                return res.status(403).json("You are not authorized to perform this action");
             }
 
             const isMember = await GroupMember.findOne({ where: { group_id, user_id } });
@@ -207,9 +209,11 @@ const groupControl = {
         const admin_id = req.user.userId; 
     
         try {
-            const group = await Group.findOne({ where: { id: group_id, creator_id: admin_id } });
-            if (!group) {
-                return res.status(403).json("You are not the admin of this group");
+            const groupMember = await GroupMember.findOne({
+                where: { group_id: group_id, user_id: admin_id, isAdmin: true }
+            });
+            if (!groupMember) {
+                return res.status(403).json("You are not authorized to perform this action");
             }
 
             await GroupMember.destroy({ where: { group_id, user_id } });
@@ -280,22 +284,26 @@ const groupControl = {
         }
     },
     makeAdmin: async (req, res) => {
-        const { group_id } = req.params;
-        const { user_id } = req.params;
+        const { group_id, user_id } = req.params; // Extract group_id and user_id from params
         const admin_id = req.user.userId; // Get the current user's ID
-
+    
         try {
-            const group = await Group.findOne({ where: { id: group_id, creator_id: admin_id } });
-            if (!group) {
-                return res.status(403).json("You are not the admin of this group");
+            // Check if the current user is the creator or an admin
+            const groupMember = await GroupMember.findOne({
+                where: { group_id: group_id, user_id: admin_id, isAdmin: true }
+            });
+            if (!groupMember) {
+                return res.status(403).json("You are not authorized to perform this action");
             }
-
-            const member = await GroupMember.findOne({ where: { group_id, user_id } });
+    
+            // Check if the user is a member of the group
+            const member = await GroupMember.findOne({ where: { group_id: group_id, user_id: user_id } });
             if (!member) {
                 return res.status(404).json("User  is not a member of this group");
             }
-
-            await GroupMember.update({ isAdmin: true }, { where: { group_id, user_id } });
+    
+            // Update the member's admin status
+            await GroupMember.update({ isAdmin: true }, { where: { group_id: group_id, user_id: user_id } });
             res.status(200).json("User  is now an admin");
         } catch (error) {
             console.error("Error making user an admin:", error);
@@ -304,22 +312,26 @@ const groupControl = {
     },
 
     removeAdmin: async (req, res) => {
-        const { group_id } = req.params;
-        const { user_id } = req.params;
+        const { group_id, user_id } = req.params; // Extract group_id and user_id from params
         const admin_id = req.user.userId; // Get the current user's ID
-
+    
         try {
-            const group = await Group.findOne({ where: { id: group_id, creator_id: admin_id } });
-            if (!group) {
-                return res.status(403).json("You are not the admin of this group");
+            // Check if the current user is the creator or an admin
+            const groupMember = await GroupMember.findOne({
+                where: { group_id: group_id, user_id: admin_id, isAdmin: true }
+            });
+            if (!groupMember) {
+                return res.status(403).json("You are not authorized to perform this action");
             }
-
-            const member = await GroupMember.findOne({ where: { group_id, user_id } });
-            if (!member || !member.isAdmin) {
+    
+            // Check if the user is an admin of the group
+            const member = await GroupMember.findOne({ where: { group_id: group_id, user_id: user_id, isAdmin: true } });
+            if (!member) {
                 return res.status(404).json("User  is not an admin of this group");
             }
-
-            await GroupMember.update({ isAdmin: false }, { where: { group_id, user_id } });
+    
+            // Update the member's admin status
+            await GroupMember.update({ isAdmin: false }, { where: { group_id: group_id, user_id: user_id } });
             res.status(200).json("User  is no longer an admin");
         } catch (error) {
             console.error("Error removing user's admin status:", error);
