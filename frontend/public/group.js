@@ -1,6 +1,8 @@
+
 document.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem("token");
-    console.log("Token retrieved:", token);
+    const CurrentUserId = localStorage.getItem("userId");
+    console.log("Token retrieved:", token, CurrentUserId); // Log the token
     fetchPendingInvites() 
     let currentGroupId = null;
     let creatorId = null;
@@ -17,16 +19,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         event.preventDefault();
         const groupName = document.getElementById("groupNameInput").value;
         await createGroup(groupName, token);
-        document.getElementById("groupNameInput").value = ''; // Clear input
+        document.getElementById("groupNameInput").value = '';
     });
 
     document.getElementById("groupMessageForm").addEventListener("submit", async (event) => {
         event.preventDefault();
         const messageInput = document.getElementById("messageInput");
         const message = messageInput.value;
-        console.log("current group id ====", currentGroupId, message, token);
+        //console.log("current group id ====", currentGroupId, message, token);
         await sendMessage(currentGroupId, message, token);
-        messageInput.value = ''; // Clear input
+        messageInput.value = ''; 
     });
 
 
@@ -69,10 +71,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     async function selectGroup(groupId, token) {
-        console.log("Selected group ID:", groupId);
-        console.log("Token:", token); // Debugging: Verify the token
+        //console.log("Selected group ID:", groupId);
+        //console.log("Token:", token); //  Verify the token
         currentGroupId = groupId;
-        console.log("Current group ID:", currentGroupId);
+        //console.log("Current group ID:", currentGroupId);
         await loadGroupMessages(groupId, token);
         await updateGroupName(groupId, token);
         await checkIfAdmin(groupId, token);
@@ -100,7 +102,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
             const messages = await response.json();
-            console.log(messages);
+            //console.log(messages);
             displayMessages(messages);
         } catch (error) {
             console.error("Error loading group messages:", error);
@@ -211,11 +213,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     function displayMessages(messages) {
         const messagesContainer = document.getElementById("groupMessages");
         messagesContainer.innerHTML = ''; // Clear existing messages
-
+        //console.log("messages ====", messages);
         messages.forEach(message => {
-            const messageItem = document.createElement("div");
-            messageItem.innerText = `${message.User.name}: ${message.message}`; 
-            messagesContainer.appendChild(messageItem);
+
+            if(message.user_id === parseInt(CurrentUserId)){
+                const messageItem = document.createElement("div");
+                messageItem.classList.add("current-user");
+                messageItem.style.textAlign = "right";
+                messageItem.innerText = `${message.User.name}: ${message.message}`; 
+                messagesContainer.appendChild(messageItem);
+            }
+            else{
+                const messageItem = document.createElement("div");
+                messageItem.classList.add("other-user");
+                messageItem.style.textAlign = "left";
+                messageItem.innerText = `${message.User.name}: ${message.message}`; 
+                messagesContainer.appendChild(messageItem);
+            }
         });
     }
 
@@ -311,7 +325,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 body: JSON.stringify({ user_id: userId })
             });
             const result = await response.json();
-            alert(result); // Show the result
+            alert("Removed User sussessfully"); // Show the result
             document.getElementById("deleteGroupMemberButton").click();
         } catch (error) {
             console.error("Error removing user from group:", error);

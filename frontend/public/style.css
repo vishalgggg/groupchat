@@ -110,13 +110,14 @@ button:hover{
     background-color: #0056b3;
 }
 .current-user {
-    align-self: flex-end; /* Aligns the message to the right */
+    align-self: flex-end; 
     background-color: #18ce3a; 
     padding: 10px;
     border-radius: 5px;
     display: inline-block; 
     text-align: right; 
     max-width: 70%; 
+    margin: 10px;
 
 }
 
@@ -129,6 +130,7 @@ button:hover{
     text-align: left;
     max-width: 70%; 
     color: #fdfafc;
+    margin: 10px;
     
 }
 .groupbody{
@@ -143,7 +145,7 @@ button:hover{
 }
 
 .left-sidebar {
-    width: 350px;
+    width: 30%;
     background-color: #91f2c5;
     padding: 20px;
     border-right: 1px solid #ccc;
@@ -170,8 +172,8 @@ button:hover{
 #groupName {
     margin-top: 0%;
     display: flex;
-    flex-direction: row; /* Change to row to align items horizontally */
-    align-items: center; /* Vertically center the items */
+    flex-direction: row; 
+    align-items: center; 
     background-color: rgb(104, 103, 103);
     border-radius: 10px;
     padding: 5px;
@@ -179,20 +181,20 @@ button:hover{
 }
 #addAdminButton {
     margin-top: 0%;
-    margin-left: auto; /* Push the button to the right */
+    margin-left: auto;
 }
 
 #addGroupMemberButton {
     margin-top: 0%;
-    margin-left: 70%; /* Push the button to the right */
+    margin-left: auto; 
 }
 #deleteGroupMemberButton{
     margin-top: 0%;
-    margin-left: auto; /* Push the button to the right */
+    margin-left: auto; 
 }
 #leaveGroupButton{
     margin-top: 0%;
-    margin-left: auto; /* Push the button to the right */
+    margin-left: auto; 
 }
 #groupH2{
     text-align: center;

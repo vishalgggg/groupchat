@@ -1,9 +1,11 @@
+require('dotenv').config();
 const express = require('express');
 const userRoutes = require('./routes/userRoutes');
 const messageRoutes = require("./routes/messageRoutes");
 const groupRoutes = require("./routes/groupRoutes");
 const path = require('path');
 const cors = require('cors');
+
 
 const app = express();
 
@@ -29,4 +31,6 @@ app.get("/login",(req,res) => {
     res.sendFile(path.join(__dirname,"../frontend/public/login.html"));
 });
 
-app.listen(3000);
+app.listen(process.env.MYSQL_PORT,() => {
+    console.log(`Server is running on port ${process.env.MYSQL_PORT}`);
+});
