@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () =>  {
             console.log(result)
 
             if(result === "success"){
+                alert("signup Successfull")
                 window.location.href = "/login";
             }
             else{
