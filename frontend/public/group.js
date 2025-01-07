@@ -1,7 +1,8 @@
 
 document.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem("token");
-    const CurrentUserId = localStorage.getItem("userId");
+    let CurrentUserId = localStorage.getItem("userId");
+
     console.log("Token retrieved:", token, CurrentUserId); // Log the token
     fetchPendingInvites() 
     let currentGroupId = null;
@@ -75,6 +76,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         //console.log("Token:", token); //  Verify the token
         currentGroupId = groupId;
         //console.log("Current group ID:", currentGroupId);
+        localStorage.setItem("currentGroupId",currentGroupId)
+        socket.disconnect();
+        socket.connect();
+        socket.emit('joinGroup', currentGroupId);
+        console.log("Joined group:", currentGroupId);
+        
         await loadGroupMessages(groupId, token);
         await updateGroupName(groupId, token);
         await checkIfAdmin(groupId, token);
@@ -90,6 +97,35 @@ document.addEventListener("DOMContentLoaded", async () => {
         creatorId = group.creator_id; 
     }
 
+    const socket = io('http://localhost:3000');
+    socket.on('connect', () => {
+        console.log('Connected to server');
+        const currentGroupId = localStorage.getItem("currentGroupId")
+        console.log(currentGroupId)
+        socket.emit('joinGroup', currentGroupId);
+        console.log("groupJoined")
+        const messagesContainer = document.getElementById("groupMessages");
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+    });
+
+    socket.on('newMessage', (newMessage) => {
+        console.log("newMessage:", newMessage);
+        const currentGroupId = localStorage.getItem("currentGroupId");
+        if (parseInt(newMessage.groupId)===parseInt(currentGroupId)) {
+            displayMessage(newMessage)
+            const messagesContainer = document.getElementById("groupMessages");
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+    });
+
+    socket.on('groupUpdate', (data) => {
+        currentGroupId = localStorage.getItem("currentGroupId");
+        if (data.groupId === currentGroupId) {
+            updateGroupName(currentGroupId, token);
+            checkIfAdmin(currentGroupId, token);
+        }
+    });
 
     async function loadGroupMessages(groupId, token) {
         try {
@@ -102,8 +138,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
             const messages = await response.json();
-            //console.log(messages);
             displayMessages(messages);
+
         } catch (error) {
             console.error("Error loading group messages:", error);
         }
@@ -138,21 +174,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 alert("Invalid request");
                 return;
             }
-            const response = await fetch(`/api/groups/${groupId}/messages`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ message })
-            });
-            if (response.ok) {
-                await loadGroupMessages(groupId, token); 
-            } else {
-                const errorText = await response.text();
-                alert("Error sending message: " + errorText); 
-                console.error("Failed to send message:", errorText);
-            }
+            const userId = parseInt(localStorage.getItem("userId"));
+            const ans = socket.emit('sendMessage', { groupId, message, userId });
+            document.getElementById("messageInput").value = '';
         } catch (error) {
             alert("Error sending message. Please try again."); 
             console.error("Error sending message:", error);
@@ -209,30 +233,30 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-
     function displayMessages(messages) {
-        const messagesContainer = document.getElementById("groupMessages");
-        messagesContainer.innerHTML = ''; // Clear existing messages
-        //console.log("messages ====", messages);
-        messages.forEach(message => {
-
-            if(message.user_id === parseInt(CurrentUserId)){
-                const messageItem = document.createElement("div");
-                messageItem.classList.add("current-user");
-                messageItem.style.textAlign = "right";
-                messageItem.innerText = `${message.User.name}: ${message.message}`; 
-                messagesContainer.appendChild(messageItem);
-            }
-            else{
-                const messageItem = document.createElement("div");
-                messageItem.classList.add("other-user");
-                messageItem.style.textAlign = "left";
-                messageItem.innerText = `${message.User.name}: ${message.message}`; 
-                messagesContainer.appendChild(messageItem);
-            }
-        });
+        if (Array.isArray(messages)) {
+            messages.forEach(message => {
+                displayMessage(message);
+            });
+        } else {
+            displayMessage(messages);
+        }
     }
-
+    
+    function displayMessage(message) {
+        const messagesContainer = document.getElementById("groupMessages");
+        const messageItem = document.createElement("div");
+        if (message.userId === parseInt(localStorage.getItem("userId"))) {
+            messageItem.classList.add("current-user");
+            messageItem.style.textAlign = "right";
+        } else {
+            messageItem.classList.add("other-user");
+            messageItem.style.textAlign = "left";
+        }
+        messageItem.innerText = `${message.name}: ${message.message}`;
+        messagesContainer.appendChild(messageItem);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight; // Scroll to the bottom
+    }
 
     async function addinviteToGroup(group_id,invite_id, action) {
         try {
@@ -260,6 +284,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.error(`Error ${action === "accept" ? "accepting" : "rejecting"} invite:`, error);
             alert(`Error ${action === "accept" ? "accepting" : "rejecting"} invite. Please try again.`);
         }
+        loadGroups(token)
     }
 
     async function fetchPendingInvites() {
@@ -590,6 +615,4 @@ async function removeAdmin(userId) {
         alert("Error removing user's admin status. Please try again.");
     }
 }
-    
-
 });

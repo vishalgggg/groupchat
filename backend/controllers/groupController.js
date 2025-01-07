@@ -95,15 +95,20 @@ const groupControl = {
             if (!isMember) {
                 return res.status(403).json("You are not a member of this group");
             }
-
+    
             const messages = await GroupMessage.findAll({ 
                 where: {group_id },
                 include: [
                     { model: User, attributes: ["name"] }, 
                 ],
             });
-            res.json(messages);
-            //console.log(messages);
+            const formattedMessages = messages.map(message => ({
+                groupId: message.group_id,
+                message: message.message,
+                userId: message.user_id,
+                name: message.User.name,
+            }));
+            res.json(formattedMessages);
         } catch (error) {
             console.error("Error retrieving group messages:", error);
             res.status(500).json("Error retrieving group messages");
@@ -284,11 +289,10 @@ const groupControl = {
         }
     },
     makeAdmin: async (req, res) => {
-        const { group_id, user_id } = req.params; // Extract group_id and user_id from params
-        const admin_id = req.user.userId; // Get the current user's ID
+        const { group_id, user_id } = req.params;
+        const admin_id = req.user.userId; 
     
         try {
-            // Check if the current user is the creator or an admin
             const groupMember = await GroupMember.findOne({
                 where: { group_id: group_id, user_id: admin_id, isAdmin: true }
             });
@@ -296,13 +300,12 @@ const groupControl = {
                 return res.status(403).json("You are not authorized to perform this action");
             }
     
-            // Check if the user is a member of the group
             const member = await GroupMember.findOne({ where: { group_id: group_id, user_id: user_id } });
             if (!member) {
                 return res.status(404).json("User  is not a member of this group");
             }
     
-            // Update the member's admin status
+
             await GroupMember.update({ isAdmin: true }, { where: { group_id: group_id, user_id: user_id } });
             res.status(200).json("User  is now an admin");
         } catch (error) {
@@ -312,8 +315,8 @@ const groupControl = {
     },
 
     removeAdmin: async (req, res) => {
-        const { group_id, user_id } = req.params; // Extract group_id and user_id from params
-        const admin_id = req.user.userId; // Get the current user's ID
+        const { group_id, user_id } = req.params; 
+        const admin_id = req.user.userId; 
     
         try {
             // Check if the current user is the creator or an admin
@@ -337,6 +340,28 @@ const groupControl = {
             console.error("Error removing user's admin status:", error);
             res.status(500).json("Error removing user's admin status");
         }
+    },
+    socketJoinGroup: async (io, socketId, groupId) => {
+        io.sockets.sockets.get(socketId).join(groupId);
+        console.log(`User    joined group ${groupId}`);
+    },
+
+    socketSendMessage: async (io, socketId, data) => {
+        const { groupId, message, userId } = data;
+        try {
+            const newMessage = await GroupMessage.create({ group_id: groupId, user_id: userId, message });
+            const user = await User.findOne({ where: { id: userId } }); // Fetch the user to get the username
+            const username = user ? user.name : 'Unknown User'; // Handle the case where username is undefined
+            console.log(`Emitting newMessage to group ${groupId} with data`, { groupId, message: newMessage.message, userId: newMessage.user_id, name: username });
+            io.to(groupId).emit('newMessage', { groupId, message: newMessage.message, userId: newMessage.user_id, name: username });
+            console.log(`New message sent to group ${groupId}:`, newMessage);
+        } catch (error) {
+            console.error("Error sending message:", error);
+        }
+    },
+
+    socketGroupUpdate: (io, socketId, groupId) => {
+        io.to(socketId).emit('groupUpdate', { groupId });
     },
 };
 
