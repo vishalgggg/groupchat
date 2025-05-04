@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         e.preventDefault();
         const message = document.getElementById("message").value;
 
-        const response = await fetch("/api/messages", {
+        const response = await fetch("http://localhost:4000/api/messages", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     async function loadMessages() {
-        const response = await fetch("/api/messages", {
+        const response = await fetch("http://localhost:4000/api/messages", {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}` // Include the token here

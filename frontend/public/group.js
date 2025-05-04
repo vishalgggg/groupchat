@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function loadGroups(token) {
         try {
-            const response = await fetch("/api/groups", {
+            const response = await fetch("http://localhost:4000/api/groups", {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (!response.ok) {
@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         await loadGroupMessages(groupId, token);
         await updateGroupName(groupId, token);
         await checkIfAdmin(groupId, token);
-        const groupResponse = await fetch(`/api/groups/${groupId}`, {
+        const groupResponse = await fetch(`http://localhost:4000/api/groups/${groupId}`, {
             headers: { Authorization: `Bearer ${token}` }
         });
         if (!groupResponse.ok) {
@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         creatorId = group.creator_id; 
     }
 
-    const socket = io('http://localhost:3000');
+    const socket = io('http://localhost:4000');
     socket.on('connect', () => {
         console.log('Connected to server');
         const currentGroupId = localStorage.getItem("currentGroupId")
@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function loadGroupMessages(groupId, token) {
         try {
-            const response = await fetch(`/api/groups/${groupId}/messages`, {
+            const response = await fetch(`http://localhost:4000/api/groups/${groupId}/messages`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (!response.ok) {
@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function createGroup(groupName, token) {
         try {
-            const response = await fetch('/api/groups', {
+            const response = await fetch('http://localhost:4000/api/groups', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function updateGroupName(groupId, token) {
         try {
-            const response = await fetch(`/api/groups/${groupId}`, {
+            const response = await fetch(`http://localhost:4000/api/groups/${groupId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -215,7 +215,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function checkIfAdmin(groupId, token) {
         try {
-            const response = await fetch(`/api/groups/${groupId}/admin`, {
+            const response = await fetch(`http://localhost:4000/api/groups/${groupId}/admin`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (response.ok) {
@@ -234,6 +234,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function displayMessages(messages) {
+        const messagesContainer = document.getElementById("groupMessages");
+        messagesContainer.innerHTML = ''; // Clear existing messages
         if (Array.isArray(messages)) {
             messages.forEach(message => {
                 displayMessage(message);
@@ -245,6 +247,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     function displayMessage(message) {
         const messagesContainer = document.getElementById("groupMessages");
+        // messagesContainer.innerHTML = ''; // Clear existing messages
         const messageItem = document.createElement("div");
         if (message.userId === parseInt(localStorage.getItem("userId"))) {
             messageItem.classList.add("current-user");
@@ -262,9 +265,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         try {
             let endpoint;
             if (action === "accept") {
-                endpoint = `/api/groups/${group_id}/invite/${invite_id}/accept`; // Endpoint for accepting invite
+                endpoint = `http://localhost:4000/api/groups/${group_id}/invite/${invite_id}/accept`; // Endpoint for accepting invite
             } else if (action === "reject") {
-                endpoint = `/api/groups/${group_id}/invite/${invite_id}/reject`; // Endpoint for rejecting invite
+                endpoint = `http://localhost:4000/api/groups/${group_id}/invite/${invite_id}/reject`; // Endpoint for rejecting invite
             } else {
                 throw new Error("Invalid action");
             }
@@ -289,7 +292,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function fetchPendingInvites() {
         try {
-            const response = await fetch("/api/invites/pending", {
+            const response = await fetch("http://localhost:4000/api/invites/pending", {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (!response.ok) {
@@ -323,7 +326,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function sendInviteToUser (user_id) {
         try {
-            const response = await fetch(`/api/groups/${currentGroupId}/invite`, {
+            const response = await fetch(`http://localhost:4000/api/groups/${currentGroupId}/invite`, {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -341,7 +344,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     async function removeUserFromGroup(userId) {
         try {
-            const response = await fetch(`/api/groups/${currentGroupId}/remove`, {
+            const response = await fetch(`http://localhost:4000/api/groups/${currentGroupId}/remove`, {
                 method: "DELETE",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -362,7 +365,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("addGroupMemberButton").addEventListener("click", async () => {
         try {
             // Fetch all users
-            const usersResponse = await fetch(`/api/groups/${currentGroupId}/users`, {
+            const usersResponse = await fetch(`http://localhost:4000/api/groups/${currentGroupId}/users`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (!usersResponse.ok) {
@@ -371,7 +374,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
             const users = await usersResponse.json();
-            const membersResponse = await fetch(`/api/groups/${currentGroupId}/members`, {
+            const membersResponse = await fetch(`http://localhost:4000/api/groups/${currentGroupId}/members`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (!membersResponse.ok) {
@@ -396,7 +399,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function getGroupMembers() {
         try {
             // Fetch all group members
-            const membersResponse = await fetch(`/api/groups/${currentGroupId}/members`, {
+            const membersResponse = await fetch(`http://localhost:4000/api/groups/${currentGroupId}/members`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (!membersResponse.ok) {
@@ -407,7 +410,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const members = await membersResponse.json();
             //console.log("members ====", members);
             // Fetch all users
-            const usersResponse = await fetch(`/api/groups/${currentGroupId}/users`, {
+            const usersResponse = await fetch(`http://localhost:4000/api/groups/${currentGroupId}/users`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (!usersResponse.ok) {
@@ -478,7 +481,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (leaveGroupButton) {
         leaveGroupButton.addEventListener("click", async () => {
             try {
-                const response = await fetch(`/api/groups/${currentGroupId}/leave`, {
+                const response = await fetch(`http://localhost:4000/api/groups/${currentGroupId}/leave`, {
                     method: "DELETE",
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -499,7 +502,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Add event listener to the addAdminButton
     document.getElementById("addAdminButton").addEventListener("click", async () => {
         try {
-            const membersResponse = await fetch(`/api/groups/${currentGroupId}/members`, {
+            const membersResponse = await fetch(`http://localhost:4000/api/groups/${currentGroupId}/members`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (!membersResponse.ok) {
@@ -509,7 +512,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
             const members = await membersResponse.json();
     
-            const usersResponse = await fetch(`/api/groups/${currentGroupId}/users`, {
+            const usersResponse = await fetch(`http://localhost:4000/api/groups/${currentGroupId}/users`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (!usersResponse.ok) {
@@ -583,7 +586,7 @@ function renderAdminList(usersInGroup,members) {
 // Function to make a user an admin
 async function makeAdmin(userId) {
     try {
-        const response = await fetch(`/api/groups/${currentGroupId}/members/${userId}/make-admin`, {
+        const response = await fetch(`http://localhost:4000/api/groups/${currentGroupId}/members/${userId}/make-admin`, {
             method: "PATCH",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -601,7 +604,7 @@ async function makeAdmin(userId) {
 // Function to remove a user's admin status
 async function removeAdmin(userId) {
     try {
-        const response = await fetch(`/api/groups/${currentGroupId}/members/${userId}/remove-admin`, {
+        const response = await fetch(`http://localhost:4000/api/groups/${currentGroupId}/members/${userId}/remove-admin`, {
             method: "PATCH",
             headers: {
                 Authorization: `Bearer ${token}`,

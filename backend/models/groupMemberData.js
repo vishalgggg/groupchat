@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = require("../db");
 const User = require("./loginData"); 
-
+const Group = require("./groupData"); // Import the Group model
 const GroupMember = sequelize.define("GroupMember", {
     id: {
         type: DataTypes.INTEGER,
@@ -12,7 +12,7 @@ const GroupMember = sequelize.define("GroupMember", {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'groups', // Reference to the groups table
+            model: Group, // Reference to the groups table
             key: 'id'
         }
     },

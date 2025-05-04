@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () =>  {
             const phone = document.getElementById("phone").value;
             const password = document.getElementById("password").value;
 
-            const response = await fetch("/api/signup", {
+            const response = await fetch("http://localhost:4000/api/signup", {
                 method:"POST",
                 headers:{"Content-Type":"application/json"},
                 body:JSON.stringify({name,email,phone,password}),
@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () =>  {
 
             if(result === "success"){
                 alert("signup Successfull")
-                window.location.href = "/login";
+                window.location.href = "login.html";
             }
             else{
                 alert(result);
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () =>  {
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
         
-            const response = await fetch("/api/login", {
+            const response = await fetch("http://localhost:4000/api/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),

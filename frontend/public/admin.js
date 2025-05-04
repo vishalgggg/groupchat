@@ -2,7 +2,7 @@
 document.getElementById("addAdminButton").addEventListener("click", async () => {
     try {
         // Fetch all group members
-        const membersResponse = await fetch(`/api/groups/${currentGroupId}/members`, {
+        const membersResponse = await fetch(`http://localhost:4000/api/groups/${currentGroupId}/members`, {
             headers: { Authorization: `Bearer ${token}` }
         });
         if (!membersResponse.ok) {
@@ -13,7 +13,7 @@ document.getElementById("addAdminButton").addEventListener("click", async () => 
         const members = await membersResponse.json();
 
         // Fetch all users
-        const usersResponse = await fetch(`/api/groups/${currentGroupId}/users`, {
+        const usersResponse = await fetch(`http://localhost:4000/api/groups/${currentGroupId}/users`, {
             headers: { Authorization: `Bearer ${token}` }
         });
         if (!usersResponse.ok) {
@@ -71,7 +71,7 @@ function renderAdminList(members, users) {
 // Function to make a user an admin
 async function makeAdmin(userId) {
     try {
-        const response = await fetch(`/api/groups/${currentGroupId}/members/${userId}/make-admin`, {
+        const response = await fetch(`http://localhost:4000/api/groups/${currentGroupId}/members/${userId}/make-admin`, {
             method: "PATCH",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -89,7 +89,7 @@ async function makeAdmin(userId) {
 // Function to remove a user's admin status
 async function removeAdmin(userId) {
     try {
-        const response = await fetch(`/api/groups/${currentGroupId}/members/${userId}/remove-admin`, {
+        const response = await fetch(`http://localhost:4000/api/groups/${currentGroupId}/members/${userId}/remove-admin`, {
             method: "PATCH",
             headers: {
                 Authorization: `Bearer ${token}`,

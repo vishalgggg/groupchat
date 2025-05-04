@@ -15,7 +15,11 @@ app.use(cors({
 }));
 
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: "*", // Allow all origins
+    }
+});
 
 app.use(express.json());
 
